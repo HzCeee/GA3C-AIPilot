@@ -99,7 +99,7 @@ class ProcessAgent(Process):
 
             prediction, value = self.predict(self.env.current_state)
             action = self.select_action(prediction)
-            reward, done = self.env.step(action)
+            _, reward, done, info = self.env.step(action)
             reward_sum += reward
             exp = Experience(self.env.previous_state, action, prediction, reward, done)
             experiences.append(exp)
@@ -109,7 +109,7 @@ class ProcessAgent(Process):
 
                 updated_exps = ProcessAgent._accumulate_rewards(experiences, self.discount_factor, terminal_reward)
                 x_, r_, a_ = self.convert_data(updated_exps)
-                yield x_, r_, a_, reward_sum
+                yield x_, r_, a_, reward_sum, info['distance']
 
                 # reset the tmax count
                 time_count = 0
@@ -127,8 +127,9 @@ class ProcessAgent(Process):
         while self.exit_flag.value == 0:
             total_reward = 0
             total_length = 0
-            for x_, r_, a_, reward_sum in self.run_episode():
+            for x_, r_, a_, reward_sum, distance in self.run_episode():
                 total_reward += reward_sum
                 total_length += len(r_) + 1  # +1 for last frame that we drop
                 self.training_q.put((x_, r_, a_))
-            self.episode_log_q.put((datetime.now(), total_reward, total_length))
+            # self.episode_log_q.put((datetime.now(), total_reward, total_length))
+            self.episode_log_q.put((distance, total_reward, total_length))
