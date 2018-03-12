@@ -99,7 +99,7 @@ class ProcessStats(Process):
                         % (int(time.time()-self.start_time),
                            self.episode_count.value, reward,
                            rolling_reward / results_q.qsize(),
-                           2313# rolling_frame_count / (datetime.now() - first_time).total_seconds(),
+                           2313, # rolling_frame_count / (datetime.now() - first_time).total_seconds(),
                            self.FPS(), self.TPS(),
                            self.trainer_count.value, self.predictor_count.value, self.agent_count.value))
                     sys.stdout.flush()
