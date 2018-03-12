@@ -66,8 +66,9 @@ class NetworkVP:
                 
 
     def _create_graph(self):
-        self.x = tf.placeholder(
-            tf.float32, [None, self.img_height, self.img_width, self.img_channels], name='X')
+        # self.x = tf.placeholder(
+        #     tf.float32, [None, self.img_height, self.img_width, self.img_channels], name='X')
+        self.x = tf.placeholder(tf.float32, [None, 28], name='X')
         self.y_r = tf.placeholder(tf.float32, [None], name='Yr')
 
         self.var_beta = tf.placeholder(tf.float32, name='beta', shape=[])
@@ -76,18 +77,27 @@ class NetworkVP:
         self.global_step = tf.Variable(0, trainable=False, name='step')
 
         # As implemented in A3C paper
-        self.n1 = self.conv2d_layer(self.x, 8, 16, 'conv11', strides=[1, 4, 4, 1])
-        self.n2 = self.conv2d_layer(self.n1, 4, 32, 'conv12', strides=[1, 2, 2, 1])
+        # self.n1 = self.conv2d_layer(self.x, 8, 16, 'conv11', strides=[1, 4, 4, 1])
+        # self.n2 = self.conv2d_layer(self.n1, 4, 32, 'conv12', strides=[1, 2, 2, 1])
         self.action_index = tf.placeholder(tf.float32, [None, self.num_actions])
-        _input = self.n2
+        # _input = self.n2
 
-        flatten_input_shape = _input.get_shape()
-        nb_elements = flatten_input_shape[1] * flatten_input_shape[2] * flatten_input_shape[3]
+        self.flat = self.x
+        self.d1 = self.dense_layer(self.flat, 4096, 'dense1')
+        self.d2 = self.dense_layer(self.d1, 4096, 'dense2')
+        self.d3 = self.dense_layer(self.d2, 2048, 'dense3')
+        self.d4 = self.dense_layer(self.d3, 2048, 'dense4')
+        self.d5 = self.dense_layer(self.d4, 1024, 'dense5')
+        self.d6 = self.dense_layer(self.d5, 1024, 'dense6')
+        self.logits_v = tf.squeeze(self.dense_layer(self.d6, 1, 'logits_v', func=None), axis=[1])
+        
+        # flatten_input_shape = _input.get_shape()
+        # nb_elements = flatten_input_shape[1] * flatten_input_shape[2] * flatten_input_shape[3]
 
-        self.flat = tf.reshape(_input, shape=[-1, nb_elements._value])
-        self.d1 = self.dense_layer(self.flat, 256, 'dense1')
+        # self.flat = tf.reshape(_input, shape=[-1, nb_elements._value])
+        # self.d1 = self.dense_layer(self.flat, 256, 'dense1')
 
-        self.logits_v = tf.squeeze(self.dense_layer(self.d1, 1, 'logits_v', func=None), axis=[1])
+        # self.logits_v = tf.squeeze(self.dense_layer(self.d1, 1, 'logits_v', func=None), axis=[1])
         self.cost_v = 0.5 * tf.reduce_sum(tf.square(self.y_r - self.logits_v), axis=0)
 
         self.logits_p = self.dense_layer(self.d1, self.num_actions, 'logits_p', func=None)
@@ -169,8 +179,8 @@ class NetworkVP:
         for var in tf.trainable_variables():
             summaries.append(tf.summary.histogram("weights_%s" % var.name, var))
 
-        summaries.append(tf.summary.histogram("activation_n1", self.n1))
-        summaries.append(tf.summary.histogram("activation_n2", self.n2))
+        # summaries.append(tf.summary.histogram("activation_n1", self.n1))
+        # summaries.append(tf.summary.histogram("activation_n2", self.n2))
         summaries.append(tf.summary.histogram("activation_d2", self.d1))
         summaries.append(tf.summary.histogram("activation_v", self.logits_v))
         summaries.append(tf.summary.histogram("activation_p", self.softmax_p))

@@ -31,7 +31,8 @@ import numpy as np
 import time
 
 from Config import Config
-from Environment import Environment
+# from Environment import Environment
+from DroneSimEnv import Environment
 from Experience import Experience
 
 

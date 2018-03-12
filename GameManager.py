@@ -28,11 +28,17 @@ import gym
 
 
 class GameManager:
-    def __init__(self, game_name, display):
+    def __init__(self, game_name, display, custom_env=None):
         self.game_name = game_name
         self.display = display
 
-        self.env = gym.make(game_name)
+        # self.env = gym.make(game_name)
+
+        if custom_env is None:
+            self.env = gym.make(game_name)
+        else:
+            self.env = custom_env
+
         self.reset()
 
     def reset(self):

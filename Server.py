@@ -29,7 +29,8 @@ from multiprocessing import Queue
 import time
 
 from Config import Config
-from Environment import Environment
+# from Environment import Environment
+from DroneSimEnv import Environment
 from NetworkVP import NetworkVP
 from ProcessAgent import ProcessAgent
 from ProcessStats import ProcessStats
