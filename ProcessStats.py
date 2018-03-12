@@ -68,8 +68,8 @@ class ProcessStats(Process):
             self.start_time = time.time()
             first_time = datetime.now()
             while True:
-                episode_time, reward, length = self.episode_log_q.get()
-                results_logger.write('%s, %d, %d\n' % (episode_time.strftime("%Y-%m-%d %H:%M:%S"), reward, length))
+                distance, reward, length = self.episode_log_q.get()
+                results_logger.write('%s, %d, %d\n' % (distance, reward, length))
                 results_logger.flush()
 
                 self.total_frame_count += length
@@ -79,12 +79,12 @@ class ProcessStats(Process):
                 rolling_reward += reward
 
                 if results_q.full():
-                    old_episode_time, old_reward, old_length = results_q.get()
+                    old_distance, old_reward, old_length = results_q.get()
                     rolling_frame_count -= old_length
                     rolling_reward -= old_reward
-                    first_time = old_episode_time
+                    first_time = old_distance
 
-                results_q.put((episode_time, reward, length))
+                results_q.put((distance, reward, length))
 
                 if self.episode_count.value % Config.SAVE_FREQUENCY == 0:
                     self.should_save_model.value = 1
@@ -99,7 +99,7 @@ class ProcessStats(Process):
                         % (int(time.time()-self.start_time),
                            self.episode_count.value, reward,
                            rolling_reward / results_q.qsize(),
-                           rolling_frame_count / (datetime.now() - first_time).total_seconds(),
+                           2313# rolling_frame_count / (datetime.now() - first_time).total_seconds(),
                            self.FPS(), self.TPS(),
                            self.trainer_count.value, self.predictor_count.value, self.agent_count.value))
                     sys.stdout.flush()

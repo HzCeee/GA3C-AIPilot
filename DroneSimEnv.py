@@ -108,7 +108,7 @@ class Environment(gym.Env):
         '''
         # self.action_space = spaces.Box(low=self.low_action, high=self.high_action)
         self.action_space = spaces.Discrete(81)
-        self.observation_space = spaces.Box(low=self.low_state, high=self.high_state)
+        self.observation_space = spaces.Box(low=self.low_state, high=self.high_state, dtype = np.float32)
 
         self.game = GameManager('DroneSim', display=Config.PLAY_MODE, custom_env=self)
 
