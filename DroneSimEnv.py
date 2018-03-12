@@ -5,7 +5,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 
-from baselines import logger
+# from baselines import logger
 # from projection import *
 from collections import deque
 
