@@ -68,7 +68,7 @@ class NetworkVP:
     def _create_graph(self):
         # self.x = tf.placeholder(
         #     tf.float32, [None, self.img_height, self.img_width, self.img_channels], name='X')
-        self.x = tf.placeholder(tf.float32, [None, 28], name='X')
+        self.x = tf.placeholder(tf.float32, [None, 24], name='X')
         self.y_r = tf.placeholder(tf.float32, [None], name='Yr')
 
         self.var_beta = tf.placeholder(tf.float32, name='beta', shape=[])
