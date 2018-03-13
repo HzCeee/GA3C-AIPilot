@@ -38,6 +38,9 @@ import time
 
 from Config import Config
 
+from collections import deque
+import numpy as np
+
 
 class ProcessStats(Process):
     def __init__(self):
@@ -50,6 +53,11 @@ class ProcessStats(Process):
         self.predictor_count = Value('i', 0)
         self.agent_count = Value('i', 0)
         self.total_frame_count = 0
+
+        self.roll_distance = deque([])
+        self.roll_success_rate = deque([])
+        self.max_success_rate = 0
+        self.mode = 0 # 0 for generall model, 1 for best model
 
     def FPS(self):
         # average FPS from the beginning of the training (not current FPS)
@@ -71,6 +79,29 @@ class ProcessStats(Process):
                 distance, reward, length = self.episode_log_q.get()
                 results_logger.write('%s, %d, %d\n' % (distance, reward, length))
                 results_logger.flush()
+
+                # save best model
+                # ROLLOUT BEGIN
+                if len(self.roll_distance) < 2000:
+                    self.roll_distance.append(distance)
+                else:
+                    self.roll_distance.popleft()
+                    self.roll_distance.append(distance)
+
+                success_rate = 1 if distance <= 1 else 0
+
+                if len(self.roll_success_rate) < 2000:
+                    self.roll_success_rate.append(success_rate)
+                else:
+                    self.roll_success_rate.popleft()
+                    self.roll_success_rate.append(success_rate)
+                # ROLLOUT END
+                # SAVEMODEL BEGIN
+                self.mode = 0
+                if np.mean(self.roll_success_rate) > self.max_success_rate:
+                    self.max_success_rate = np.mean(self.roll_success_rate)
+                    self.mode = 1
+                #SAVEMODEL END
 
                 self.total_frame_count += length
                 self.episode_count.value += 1

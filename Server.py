@@ -120,7 +120,9 @@ class Server:
 
             # Saving is async - even if we start saving at a given episode, we may save the model at a later episode
             if Config.SAVE_MODELS and self.stats.should_save_model.value > 0:
-                self.save_model(1)
+                self.save_model(0)
+                if self.stats.mode = 1:
+                    self.save_model(1)
                 self.stats.should_save_model.value = 0
 
             time.sleep(0.01)
