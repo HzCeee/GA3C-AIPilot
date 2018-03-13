@@ -46,11 +46,11 @@ class Config:
     
     # If the dynamic configuration is on, these are the initial values.
     # Number of Agents
-    AGENTS = 32 
+    AGENTS = 64
     # Number of Predictors
-    PREDICTORS = 2
+    PREDICTORS = 4
     # Number of Trainers
-    TRAINERS = 2
+    TRAINERS = 4
 
     # Device
     DEVICE = 'gpu:0'
@@ -70,8 +70,8 @@ class Config:
     TIME_MAX = 5
     
     # Reward Clipping
-    REWARD_MIN = -1
-    REWARD_MAX = 1
+    REWARD_MIN = -1000
+    REWARD_MAX = 1000
 
     # Max size of the queue
     MAX_QUEUE_SIZE = 100
@@ -79,8 +79,8 @@ class Config:
 
     # Input of the DNN
     STACKED_FRAMES = 4
-    IMAGE_WIDTH = 84
-    IMAGE_HEIGHT = 84
+    IMAGE_WIDTH = 256
+    IMAGE_HEIGHT = 144
 
     # Total number of episodes and annealing frequency
     EPISODES = 400000
@@ -114,14 +114,14 @@ class Config:
     # Log and save
 
     # Enable TensorBoard
-    TENSORBOARD = False
+    TENSORBOARD = True
     # Update TensorBoard every X training steps
     TENSORBOARD_UPDATE_FREQUENCY = 1000
 
     # Enable to save models every SAVE_FREQUENCY episodes
     SAVE_MODELS = True
     # Save every SAVE_FREQUENCY episodes
-    SAVE_FREQUENCY = 1000
+    SAVE_FREQUENCY = 10000
     
     # Print stats every PRINT_STATS_FREQUENCY episodes
     PRINT_STATS_FREQUENCY = 1

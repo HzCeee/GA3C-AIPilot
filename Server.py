@@ -97,8 +97,9 @@ class Server:
         if Config.TENSORBOARD and self.stats.training_count.value % Config.TENSORBOARD_UPDATE_FREQUENCY == 0:
             self.model.log(x_, r_, a_)
 
-    def save_model(self):
-        self.model.save(self.stats.episode_count.value)
+    def save_model(self, mode):
+        # self.model.save(self.stats.episode_count.value)
+        self.model.save(mode)
 
     def main(self):
         self.stats.start()
@@ -119,7 +120,7 @@ class Server:
 
             # Saving is async - even if we start saving at a given episode, we may save the model at a later episode
             if Config.SAVE_MODELS and self.stats.should_save_model.value > 0:
-                self.save_model()
+                self.save_model(1)
                 self.stats.should_save_model.value = 0
 
             time.sleep(0.01)

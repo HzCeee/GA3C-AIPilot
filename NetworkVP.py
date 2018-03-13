@@ -253,15 +253,19 @@ class NetworkVP:
         step, summary = self.sess.run([self.global_step, self.summary_op], feed_dict=feed_dict)
         self.log_writer.add_summary(summary, step)
 
-    def _checkpoint_filename(self, episode):
-        return 'checkpoints/%s_%08d' % (self.model_name, episode)
+    def _checkpoint_filename(self, mode):
+        # return 'checkpoints/%s_%08d' % (self.model_name, episode)
+        if mode == 0:
+            return 'checkpoints/%s' % (self.model_name)
+        else:
+            return 'checkpoints/%s_best' % (self.model_name)
     
     def _get_episode_from_filename(self, filename):
         # TODO: hacky way of getting the episode. ideally episode should be stored as a TF variable
         return int(re.split('/|_|\.', filename)[2])
 
-    def save(self, episode):
-        self.saver.save(self.sess, self._checkpoint_filename(episode))
+    def save(self, mode):
+        self.saver.save(self.sess, self._checkpoint_filename(mode))
 
     def load(self):
         filename = tf.train.latest_checkpoint(os.path.dirname(self._checkpoint_filename(episode=0)))
