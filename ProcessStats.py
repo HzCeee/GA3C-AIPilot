@@ -56,7 +56,7 @@ class ProcessStats(Process):
 
         self.roll_distance = deque([])
         self.roll_success_rate = deque([])
-        self.max_success_rate = 0
+        self.max_success_rate = -1
         self.mode = 0 # 0 for generall model, 1 for best model
 
     def FPS(self):
