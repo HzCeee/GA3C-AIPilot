@@ -46,11 +46,11 @@ class Config:
     
     # If the dynamic configuration is on, these are the initial values.
     # Number of Agents
-    AGENTS = 64
+    AGENTS = 96
     # Number of Predictors
-    PREDICTORS = 4
+    PREDICTORS = 8
     # Number of Trainers
-    TRAINERS = 4
+    TRAINERS = 8
 
     # Device
     DEVICE = 'gpu:0'
@@ -70,8 +70,8 @@ class Config:
     TIME_MAX = 5
     
     # Reward Clipping
-    REWARD_MIN = -1000
-    REWARD_MAX = 1000
+    REWARD_MIN = -10000
+    REWARD_MAX = 10000
 
     # Max size of the queue
     MAX_QUEUE_SIZE = 100
