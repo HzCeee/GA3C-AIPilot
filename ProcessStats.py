@@ -38,8 +38,8 @@ import time
 
 from Config import Config
 
-# from collections import deque
-# import numpy as np
+from collections import deque
+import numpy as np
 
 
 class ProcessStats(Process):
@@ -54,12 +54,10 @@ class ProcessStats(Process):
         self.agent_count = Value('i', 0)
         self.total_frame_count = 0
 
-        # self.roll_distance = deque([])
-        # self.roll_success_rate = deque([])
-        # self.max_success_rate = -1
-        # self.mode = 0 # 0 for generall model, 1 for best model
-        self.mode = Value('i', 0)
-
+        self.roll_distance = deque([])
+        self.roll_success_rate = deque([])
+        self.max_success_rate = -1
+        self.mode = 0 # 0 for generall model, 1 for best model
 
     def FPS(self):
         # average FPS from the beginning of the training (not current FPS)
@@ -74,10 +72,6 @@ class ProcessStats(Process):
             rolling_frame_count = 0
             rolling_reward = 0
             results_q = queueQueue(maxsize=Config.STAT_ROLLING_MEAN_WINDOW)
-
-            rolling_distance = 0
-            rolling_success_rate = 0
-            max_success_rate = -1
             
             self.start_time = time.time()
             first_time = datetime.now()
@@ -86,31 +80,42 @@ class ProcessStats(Process):
                 results_logger.write('%s, %d, %d\n' % (distance, reward, length))
                 results_logger.flush()
 
+                # save best model
+                # ROLLOUT BEGIN
+                if len(self.roll_distance) < 2000:
+                    self.roll_distance.append(distance)
+                else:
+                    self.roll_distance.popleft()
+                    self.roll_distance.append(distance)
+
+                success_rate = 1 if distance <= 1 else 0
+
+                if len(self.roll_success_rate) < 2000:
+                    self.roll_success_rate.append(success_rate)
+                else:
+                    self.roll_success_rate.popleft()
+                    self.roll_success_rate.append(success_rate)
+                # ROLLOUT END
+                # SAVEMODEL BEGIN
+                self.mode = 0
+                if np.mean(self.roll_success_rate) > self.max_success_rate:
+                    self.max_success_rate = np.mean(self.roll_success_rate)
+                    self.mode = 1
+                #SAVEMODEL END
+
                 self.total_frame_count += length
                 self.episode_count.value += 1
 
                 rolling_frame_count += length
                 rolling_reward += reward
 
-                rolling_distance += distance
-                success_rate = 1 if distance <= 1 else 0
-                rolling_success_rate += success_rate
-
                 if results_q.full():
-                    old_distance, old_reward, old_length, old_success_rate = results_q.get()
+                    old_distance, old_reward, old_length = results_q.get()
                     rolling_frame_count -= old_length
                     rolling_reward -= old_reward
                     first_time = old_distance
 
-                    rolling_distance -= old_distance
-                    rolling_success_rate -= old_success_rate
-
-                results_q.put((distance, reward, length, success_rate))
-
-                self.mode.value = 0
-                if rolling_success_rate / results_q.qsize() > max_success_rate:
-                    max_success_rate = rolling_success_rate / results_q.qsize()
-                    self.mode.value = 1
+                results_q.put((distance, reward, length))
 
                 if self.episode_count.value % Config.SAVE_FREQUENCY == 0:
                     self.should_save_model.value = 1
