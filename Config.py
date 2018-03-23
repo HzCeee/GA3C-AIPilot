@@ -39,18 +39,20 @@ class Config:
     # Load old models. Throws if the model doesn't exist
     LOAD_CHECKPOINT = False
     # If 0, the latest checkpoint is loaded
-    LOAD_EPISODE = 0 
+    # Note: Change parameter meaning here
+    # If 0, the latest checkpoint is loaded, else the best checkpoint is loaded
+    LOAD_EPISODE = 0
 
     #########################################################################
     # Number of agents, predictors, trainers and other system settings
     
     # If the dynamic configuration is on, these are the initial values.
     # Number of Agents
-    AGENTS = 96
+    AGENTS = 64
     # Number of Predictors
-    PREDICTORS = 8
+    PREDICTORS = 4
     # Number of Trainers
-    TRAINERS = 8
+    TRAINERS = 4
 
     # Device
     DEVICE = 'gpu:0'
@@ -70,8 +72,8 @@ class Config:
     TIME_MAX = 5
     
     # Reward Clipping
-    REWARD_MIN = -10000
-    REWARD_MAX = 10000
+    REWARD_MIN = -100000
+    REWARD_MAX = 100000
 
     # Max size of the queue
     MAX_QUEUE_SIZE = 100

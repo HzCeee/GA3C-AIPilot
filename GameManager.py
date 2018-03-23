@@ -26,6 +26,8 @@
 
 import gym
 
+import dronesim
+
 
 class GameManager:
     def __init__(self, game_name, display, custom_env=None):
@@ -43,6 +45,10 @@ class GameManager:
 
     def reset(self):
         observation = self.env.reset()
+
+        if self.display:
+            self.renderer = dronesim.visualdrone()
+
         return observation
 
     def step(self, action):
@@ -52,4 +58,7 @@ class GameManager:
 
     def _update_display(self):
         if self.display:
-            self.env.render()
+            # self.env.render()
+            pos_hunter, ori_hunter, acc_hunter, pos_target, ori_target, acc_target, thrust = dronesim.siminfo()
+            self.renderer.render(pos_hunter, ori_hunter, pos_target, ori_target)
+
