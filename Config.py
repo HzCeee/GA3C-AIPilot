@@ -88,6 +88,9 @@ class Config:
     EPISODES = 400000
     ANNEALING_EPISODE_COUNT = 400000
 
+    # Total number of episodes for play with trained model
+    PLAY_EPISODES = 5
+
     # Entropy regualrization hyper-parameter
     BETA_START = 0.01
     BETA_END = 0.01

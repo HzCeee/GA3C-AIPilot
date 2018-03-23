@@ -53,7 +53,7 @@ if Config.PLAY_MODE:
     Config.TRAIN_MODELS = False
     Config.SAVE_MODELS = False
 
-    Config.EPISODES = 1
+    Config.EPISODES = Config.PLAY_EPISODES - 1
 
 gym.undo_logger_setup()
 
