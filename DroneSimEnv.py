@@ -146,9 +146,6 @@ class Environment(gym.Env):
 
         dronesim.simrun(int(1e9 / self.fps), [roll, pitch, yaw, thrust], [self.roll_target, self.pitch_target, self.yaw_target, self.thrust_target])   #transform from second to nanoseconds
         
-        if Config.PLAY_MODE:
-            pos_hunter, ori_hunter, acc_hunter, pos_target, ori_target, acc_target, thrust = dronesim.siminfo()
-            self.renderer.render(pos_hunter, ori_hunter, pos_target, ori_target)
         #####################
 
         self.test_roll_hunter = roll
@@ -292,10 +289,6 @@ class Environment(gym.Env):
     def reset(self):
         # camera
         dronesim.installcamera([0,-15,180])
-
-        # visual
-        if Config.PLAY_MODE:
-            self.renderer = dronesim.visualdrone()
 
         # state related property
         position_hunter = [0.0, 0.0, 10.0] # x, y, z
