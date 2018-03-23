@@ -1,1 +1,1 @@
-python GA3C.py PLAY_MODE=True
+python3 GA3C.py PLAY_MODE=True

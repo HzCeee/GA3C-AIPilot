@@ -262,15 +262,17 @@ class NetworkVP:
     
     def _get_episode_from_filename(self, filename):
         # TODO: hacky way of getting the episode. ideally episode should be stored as a TF variable
-        return int(re.split('/|_|\.', filename)[2])
+        # return int(re.split('/|_|\.', filename)[2])
+        return 0
 
     def save(self, mode):
         self.saver.save(self.sess, self._checkpoint_filename(mode))
 
     def load(self):
-        filename = tf.train.latest_checkpoint(os.path.dirname(self._checkpoint_filename(episode=0)))
-        if Config.LOAD_EPISODE > 0:
-            filename = self._checkpoint_filename(Config.LOAD_EPISODE)
+        # filename = tf.train.latest_checkpoint(os.path.dirname(self._checkpoint_filename(episode=0)))
+        # if Config.LOAD_EPISODE > 0:
+        #     filename = self._checkpoint_filename(Config.LOAD_EPISODE)
+        filename = self._checkpoint_filename(Config.LOAD_EPISODE)
         self.saver.restore(self.sess, filename)
         return self._get_episode_from_filename(filename)
        
